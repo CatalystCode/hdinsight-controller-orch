@@ -1,6 +1,7 @@
 {
   "name": "hdinsight-controller-orch",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "main": "app.js",
   "author": {
     "name": "mor shemesh",
     "email": "mor.shemesh@gmail.com"

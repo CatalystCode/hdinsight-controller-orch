@@ -17,12 +17,12 @@ module.exports = function (context, myTimer) {
     }
     context.log('Node.js timer trigger function ran!', timeStamp);
  
-    // var config = null;
-    // try {
-    //   config = require('../lib/config');
-    // } catch (e) {
-    //   return context.done(e);
-    // }   
+    var config = null;
+    try {
+      config = require('../lib/config');
+    } catch (e) {
+      return context.done(e);
+    }   
     
     context.log('config was read ok');
 

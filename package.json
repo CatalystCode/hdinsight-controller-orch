@@ -1,0 +1,11 @@
+{
+  "name": "hdinsight-controller-orch",
+  "version": "0.0.1",
+  "author": {
+    "name": "mor shemesh",
+    "email": "mor.shemesh@gmail.com"
+  },
+  "dependencies": {
+    "request": "^2.74.0"
+  }
+}

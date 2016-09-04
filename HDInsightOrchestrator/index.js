@@ -16,7 +16,7 @@ module.exports = function (context, myTimer) {
         context.log('Node.js is running late!');
     }
     context.log('Node.js timer trigger function ran!', timeStamp);
-
+ 
     // var config = null;
     // try {
     //   config = require('../lib/config');

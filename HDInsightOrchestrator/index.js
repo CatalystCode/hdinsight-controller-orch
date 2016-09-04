@@ -1,3 +1,7 @@
+var azure = require('azure-storage');
+var async = require('async');
+var request = require('request');
+
 module.exports = function (context, myTimer) {
     var timeStamp = new Date().toISOString();
     

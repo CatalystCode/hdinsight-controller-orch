@@ -13,7 +13,7 @@ module.exports = function (context, myTimer) {
 
     var config = null;
     try {
-      config = require('./config');
+      config = require('../lib/config');
     } catch (e) {
       return context.done(e);
     }   

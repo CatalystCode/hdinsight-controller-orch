@@ -1,6 +1,6 @@
-var azure = require('azure-storage');
-var async = require('async');
-var request = require('request');
+// var azure = require('azure-storage');
+// var async = require('async');
+// var request = require('request');
 
 //var FunctionsManager = require('../lib/manage-functions');
 //var HDInsightManager = require('../lib/manage-hdinsight');
@@ -17,14 +17,12 @@ module.exports = function (context, myTimer) {
     }
     context.log('Node.js timer trigger function ran!', timeStamp);
  
-    var config = null;
-    try {
-      config = require('../lib/config');
-    } catch (e) {
-      return context.done(e);
-    }   
-    
-    context.log('config was read ok');
+    var config = require('../lib/config');
+    if (config.errors.length) {
+      context.log('config errors: ' + JSON.stringify(config.errors));
+    } else {   
+      context.log('config was read ok');
+    }
 
     context.done();
 };

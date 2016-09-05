@@ -1,18 +1,10 @@
 {
   "bindings": [
     {
-      "name": "myQueueItem",
-      "type": "queueTrigger",
+      "name": "myTimer",
+      "type": "timerTrigger",
       "direction": "in",
-      "queueName": "js-queue-items",
-      "connection": "connection_STORAGE"
-    },
-    {
-      "type": "queue",
-      "name": "outputQueueItem",
-      "queueName": "outqueue",
-      "connection": "connection_STORAGE",
-      "direction": "out"
+      "schedule": "0 */15 * * * *"
     }
   ],
   "disabled": false

@@ -11,18 +11,7 @@ var MAX_INACTIVE_TIME = 15; // Minutes
 module.exports = function (context, myTimer) {
     var timeStamp = new Date().toISOString();
     
-    if(myTimer.isPastDue)
-    {
-        context.log('Node.js is running late!');
-    }
     context.log('Node.js timer trigger function ran!', timeStamp);
- 
-    var config = require('./config');
-    if (config.errors.length) {
-      context.log('config errors: ' + JSON.stringify(config.errors));
-    } else {   
-      context.log('config was read ok');
-    }
 
     context.done();
 };

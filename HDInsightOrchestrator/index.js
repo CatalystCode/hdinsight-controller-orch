@@ -7,7 +7,6 @@ var globalConfig = require('../config');
 var config = globalConfig.svc;
 var StatusCollector = require('../lib/status-collector');
 
-var LOG_APP_NAME = 'orch';
 var lastInactiveCheck = null;
 var MAX_INACTIVE_TIME = 2; // Minutes
 var initialized = false;
@@ -16,7 +15,7 @@ var initialized = false;
 function init(callback) {
   
   log.init({
-    domain: LOG_APP_NAME || process.env.COMPUTERNAME || '',
+    domain: process.env.COMPUTERNAME || '',
     instanceId: log.getInstanceId(),
     app: globalConfig.apps.orch.name,
     level: globalConfig.log.level,

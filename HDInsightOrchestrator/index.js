@@ -182,7 +182,7 @@ module.exports = function (context, myTimer) {
         return context.done(err);
       }
 
-      console.error('Initializing logging successfully');
+      console.log('Initializing logging successfully');
       initialized = true;
       return execute();
     });

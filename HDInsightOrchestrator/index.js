@@ -30,10 +30,10 @@ function init(callback) {
     });
 }
 
-function run(context, myTimer) {
+function run(callback) {
 
   if (!config) {
-    return context.done(new Error('Config is not set'));
+    return context(new Error('Config is not set'));
   }
 
   // Making sure to update the *run every* x seconds
@@ -63,7 +63,7 @@ function run(context, myTimer) {
       return hdinsightManager.createHDInsight(function (err) {
         if (err) { sendAlert({ error: err }); }
         console.log('Operation completed successfully');
-        return context.done();
+        return context();
       })
     }
 
@@ -74,7 +74,7 @@ function run(context, myTimer) {
       return appServiceClient.start(function (err) {
         if (err) { sendAlert({ error: err }); }
         console.log('Operation completed successfully');
-        return context.done();
+        return context();
       });
     }
 
@@ -88,7 +88,7 @@ function run(context, myTimer) {
         return appServiceClient.stop(function (err) {
           if (err) { sendAlert({ error: err }); }
           console.log('Operation completed successfully');
-          return context.done();
+          return context();
         })
     }
 
@@ -99,7 +99,7 @@ function run(context, myTimer) {
       if (!lastInactiveCheck) {
         lastInactiveCheck = now;
         console.log('Operation completed successfully - initialized check time');
-        return context.done();
+        return context();
       }
 
       var minutesPassed = getMinutes(now - lastInactiveCheck);
@@ -110,10 +110,10 @@ function run(context, myTimer) {
         return appServiceClient.stop(function (err) {
           if (err) { sendAlert({ error: err }); }
           console.log('Operation completed successfully');
-          return context.done();
+          return context();
         });
       } else {
-        return context.done();        
+        return context();        
       }
     }
     
@@ -124,7 +124,7 @@ function run(context, myTimer) {
       if (!lastInactiveCheck) {
         lastInactiveCheck = now;
         console.log('Operation completed successfully - initialized check time');
-        return context.done();
+        return context();
       }
 
       var minutesPassed = getMinutes(now - lastInactiveCheck);
@@ -139,14 +139,14 @@ function run(context, myTimer) {
             lastInactiveCheck = null; // If after 15 minutes hdinsight not down, try to delete again
           }
           console.log('Operation completed successfully');
-          return context.done();
+          return context();
         })
       } else {
-        return context.done();        
+        return context();        
       }
     }
 
-    return context.done();    
+    return context();    
   });
 
   function sendAlert(alert) {
@@ -180,7 +180,17 @@ module.exports = function (context, myTimer) {
       }
 
       initialized = true;
-      return run(context, myTimer);
+      return run(function (err) {
+
+        if (err) {
+          context.error('Error during execution: ' + err);
+          return context.done(err);
+        }
+
+        context.log('Execution completed');
+        return context.done();
+
+      });
     });
   }
 

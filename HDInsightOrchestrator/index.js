@@ -175,13 +175,16 @@ module.exports = function (context, myTimer) {
   console.log('running orchestration...');
 
   if (!initialized) {
+    context.log('Initializing logging...');
     console.log('Initializing logging...')
     return init(function (err) {
       if (err) {
+        context.error('Error initializing logging:', err);
         console.error('Error initializing logging:', err);
         return context.done(err);
       }
 
+      context.log('Initializing logging successfully');
       console.log('Initializing logging successfully');
       initialized = true;
       return execute();

@@ -180,19 +180,23 @@ module.exports = function (context, myTimer) {
       }
 
       initialized = true;
-      return run(function (err) {
-
-        if (err) {
-          context.error('Error during execution: ' + err);
-          return context.done(err);
-        }
-
-        context.log('Execution completed');
-        return context.done();
-
-      });
+      return execute();
     });
   }
 
-  return run(context, myTimer);
+  return execute();
+
+  function execute() {
+    run(function (err) {
+
+      if (err) {
+        context.error('Error during execution: ' + err);
+        return context.done(err);
+      }
+
+      context.log('Execution completed');
+      return context.done();
+
+    });
+  }
 };

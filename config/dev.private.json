@@ -1,0 +1,39 @@
+{
+  "STORAGE_ACCOUNT": "hdicontrolstore",
+  "STORAGE_KEY": "8GXSnAiePY2qxCilYH4V/JqvWPSwNe2OdfOkOtObfdpxmhDYVYwL3AwFKBfr8Sn4EFrro4GFN3++0I/OR6j3pw==",
+  "LOG_STORAGE_ACCOUNT": "hdicontrolstore",
+  "LOG_STORAGE_KEY": "8GXSnAiePY2qxCilYH4V/JqvWPSwNe2OdfOkOtObfdpxmhDYVYwL3AwFKBfr8Sn4EFrro4GFN3++0I/OR6j3pw==",
+  "LOG_LEVEL": "log",
+  "LOG_ENABLED": true,
+
+  "servicePrincipalClientId": "d0ce1b24-c9ba-4b16-8f04-f3e9874afce1",
+  "servicePrincipalSecret": "GY3dyTCGl6jm4oIhUe85KVp089uV0JWY02xq3VWGgqU=",
+  "servicePrincipalDomain": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+  "servicePrincipalSubscriptionId": "73a4ea93-d914-424d-9e64-28adf397e8e3",
+
+  "proxyAppName": "hdi-control-proxy",
+  "jobExecutionIntervalInSeconds": "10",
+
+  "resourceGroupName": "hdi-on-demand",
+  "functionAppName": "hdi-control-proxy",
+  "clusterName": "ondemand-hdspark",
+  "location": "West Europe",
+  "clusterApiVersion": "2015-03-01-preview",
+  "tags": "{}",
+  "clusterVersion": "3.4",
+  "osType": "Linux",
+  "clusterType": "Spark",
+  "clusterLoginUserName": "morshe",
+  "clusterLoginPassword": "Pa$$w0rd1",
+
+  "clusterStorageAccountName": "hdicontrolstore",
+  "clusterStorageAccountKey": "8GXSnAiePY2qxCilYH4V/JqvWPSwNe2OdfOkOtObfdpxmhDYVYwL3AwFKBfr8Sn4EFrro4GFN3++0I/OR6j3pw==",
+
+  "inputQueueName": "pending-jobs",
+  "sendAlertUrl": "http://none.none",
+
+  "clusterNodeSize": "Standard_D12",
+  "clusterWorkerNodeCount": "2",
+  "sshUserName": "morshessh",
+  "sshPassword": "Pa$$w0rd1 "
+}

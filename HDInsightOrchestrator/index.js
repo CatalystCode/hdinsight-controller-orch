@@ -46,6 +46,7 @@ function run(callback) {
 
   return statusCollector.collect(function (err, status) {
 
+    console.log('checking resulting status');
     if (err) { return sendAlert({ error: error }); }
     if (status.queueError) { return sendAlert({ error: status.queueError }); }
     if (status.funcError) { return sendAlert({ error: status.funcError }); }
@@ -174,11 +175,14 @@ module.exports = function (context, myTimer) {
   console.log('running orchestration...');
 
   if (!initialized) {
+    console.log('Initializing logging...')
     return init(function (err) {
       if (err) {
+        console.error('Error initializing logging:', err);
         return context.done(err);
       }
 
+      console.error('Initializing logging successfully');
       initialized = true;
       return execute();
     });

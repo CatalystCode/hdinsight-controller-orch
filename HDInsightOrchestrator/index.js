@@ -33,25 +33,25 @@ module.exports = function (context, myTimer) {
   return execute();
 
   function log() {
-    context.log.bind(this).call(arguments);
+    context.log.apply(this, arguments)();
     if (console) {
-      console.log.bind(this).call(arguments);      
+      console.log.apply(this, arguments)();      
     }
   }
 
   function error() {
-    context.error.bind(this).call(arguments);
+    context.error.apply(this, arguments)();
     if (console) {
-      console.error.bind(this).call(arguments);      
+      console.error.apply(this, arguments)();      
     }
   }
 
   function info() {
-    context.log.bind(this).call(arguments);
+    context.log.apply(this, arguments)();
     if (console && console.info) {
-      console.info.bind(this).call(arguments);      
+      console.info.apply(this, arguments)();      
     } else if (console && console.log) {
-      console.log.bind(this).call(arguments);      
+      console.log.apply(this, arguments)();      
     }
   }
 

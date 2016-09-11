@@ -112,14 +112,6 @@ var config = {
     // currently redirecting logs to both the console and Azure storage
     transporters: [
     {
-      name: 'console', 
-      write : true, 
-      default: false,
-      options: {
-        level: 'log'
-      }
-    },
-    {
       name: 'azuretable',
       write: true,
       default: true,

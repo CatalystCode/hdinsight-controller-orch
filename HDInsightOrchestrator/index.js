@@ -2,7 +2,7 @@ var azure = require('azure-storage');
 var async = require('async');
 var request = require('request');
 
-var log = require('../lib/log');
+var logModule = require('../lib/log');
 var globalConfig = require('../config');
 var config = globalConfig.svc;
 var StatusCollector = require('../lib/status-collector');
@@ -69,9 +69,9 @@ module.exports = function (context, myTimer) {
 
   function init(callback) {
     
-    log.init({
+    logModule.init({
       domain: process.env.COMPUTERNAME || '',
-      instanceId: log.getInstanceId(),
+      instanceId: logModule.getInstanceId(),
       app: globalConfig.apps.orch.name,
       level: globalConfig.log.level,
       transporters: globalConfig.log.transporters

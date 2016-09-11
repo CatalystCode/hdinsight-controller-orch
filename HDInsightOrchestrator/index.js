@@ -14,17 +14,17 @@ var initialized = false;
 // Initialize environment, return config
 module.exports = function (context, myTimer) {
 
-  console.log('running orchestration...');
+  log('running orchestration...');
 
   if (!initialized) {
-    console.log('Initializing logging...')
+    log('Initializing logging...')
     return init(function (err) {
       if (err) {
-        console.error('Error initializing logging:', err);
+        error('Error initializing logging:', err);
         return context.done(err);
       }
 
-      console.log('Initializing logging successfully');
+      log('Initializing logging successfully');
       initialized = true;
       return execute();
     });
@@ -32,15 +32,30 @@ module.exports = function (context, myTimer) {
 
   return execute();
 
+  function log() {
+    context.log.apply(this, arguments);
+    console.log.apply(this, arguments)      
+  }
+
+  function error() {
+    context.error.apply(this, arguments)
+    console.error.apply(this, arguments)      
+  }
+
+  function info() {
+    context.log.apply(this, arguments);
+    console.info.apply(this, arguments);      
+  }
+
   function execute() {
     run(context, function (err) {
 
       if (err) {
-        console.error('Error during execution: ' + err);
+        error('Error during execution: ' + err);
         return done(err);
       }
 
-      console.log('Execution completed');
+      log('Execution completed');
       return context.done();
 
     });
@@ -48,26 +63,6 @@ module.exports = function (context, myTimer) {
 
   function init(callback) {
     
-    if (context) {
-      var _log = console.log;
-      var _info = console.info;
-      var _error = console.error;
-      console.log = function() {
-        context.log.apply(this, arguments);
-        _log.apply(this, arguments)      
-      }
-
-      console.error = function() {
-        context.error.apply(this, arguments)
-        _error.apply(this, arguments)      
-      }
-
-      console.info = function() {
-        context.log.apply(this, arguments);
-        _info.apply(this, arguments);      
-      }
-    }
-
     logModule.init({
       domain: process.env.COMPUTERNAME || '',
       instanceId: logModule.getInstanceId(),
@@ -77,7 +72,7 @@ module.exports = function (context, myTimer) {
     },
       function(err) {
         if (err) {
-          console.error(err);
+          error(err);
           return callback(err);
         }
         return callback();
@@ -94,13 +89,13 @@ module.exports = function (context, myTimer) {
     RUN_EVERY = config.jobExecutionIntervalInSeconds;
 
     // 1. Check statuses
-    console.info('Initializing statuses');
-    var statusCollector = new StatusCollector(config);
+    info('Initializing statuses');
+    var statusCollector = new StatusCollector(context);
     var hdinsightManager = statusCollector.hdinsightManager;
 
     return statusCollector.collect(function (err, status) {
 
-      console.log('checking resulting status');
+      log('checking resulting status');
       if (err) { return sendAlert({ error: error }); }
       if (status.queueError) { return sendAlert({ error: status.queueError }); }
       if (status.funcError) { return sendAlert({ error: status.funcError }); }
@@ -112,23 +107,23 @@ module.exports = function (context, myTimer) {
       // Queue not empty
       // ================
       // 2. If queue is not empty && HDInsight is ResourceNotFound ==> create HDInsight
-      console.info('If queue is not empty && HDInsight is ResourceNotFound ==> create HDInsight');
+      info('If queue is not empty && HDInsight is ResourceNotFound ==> create HDInsight');
       if (status.queueLength > 0 && status.hdinsightStatus == 'ResourceNotFound') {
-        console.log('Creating hdinsight');
+        log('Creating hdinsight');
         return hdinsightManager.createHDInsight(function (err) {
           if (err) { sendAlert({ error: err }); }
-          console.log('Operation completed successfully');
+          log('Operation completed successfully');
           return callback();
         })
       }
 
       // 3. If queue is not empty && HDInsight is operational && Livy is alive && function is down ==> wake up function
-      console.info('If queue is not empty && HDInsight is Running && Livy is alive && function is down ==> wake up function');
+      info('If queue is not empty && HDInsight is Running && Livy is alive && function is down ==> wake up function');
       if (status.queueLength > 0 && status.hdinsightOperational && !status.funcActive) {
-        console.log('Starting proxy app');
+        log('Starting proxy app');
         return appServiceClient.start(function (err) {
           if (err) { sendAlert({ error: err }); }
-          console.log('Operation completed successfully');
+          log('Operation completed successfully');
           return callback();
         });
       }
@@ -137,34 +132,34 @@ module.exports = function (context, myTimer) {
       // ================
       // 4. If queue is empty && hdinsight = ResourceNotFound && function is up
       // This state is illigal and might happen after first deployment ==> shut down functions
-      console.info('If queue is empty && Livy jobs == 0 && hdinsight = ResourceNotFound && function is up');
+      info('If queue is empty && Livy jobs == 0 && hdinsight = ResourceNotFound && function is up');
       if (status.queueLength === 0 && status.hdinsightStatus == 'ResourceNotFound' && status.funcActive) {
-          console.log('Stopping proxy app');
+          log('Stopping proxy app');
           return appServiceClient.stop(function (err) {
             if (err) { sendAlert({ error: err }); }
-            console.log('Operation completed successfully');
+            log('Operation completed successfully');
             return callback();
           })
       }
 
       // 5. If queue is empty && Livy jobs == 0 && function is up | more than 15 minutes ==> shut down functions
-      console.info('If queue is empty && Livy jobs == 0 && function is up | more than 15 minutes ==> shut down functions');
+      info('If queue is empty && Livy jobs == 0 && function is up | more than 15 minutes ==> shut down functions');
       if (status.queueLength === 0 && status.livyRunningJobs === 0 && status.hdinsightOperational && status.funcActive) {
         var now = new Date();
         if (!lastInactiveCheck) {
           lastInactiveCheck = now;
-          console.log('Operation completed successfully - initialized check time');
+          log('Operation completed successfully - initialized check time');
           return callback();
         }
 
         var minutesPassed = getMinutes(now - lastInactiveCheck);
-        console.log('Minutes passed since inactivity of function app: ' + minutesPassed);
+        log('Minutes passed since inactivity of function app: ' + minutesPassed);
         if (minutesPassed >= MAX_INACTIVE_TIME) {
-          console.log('Stopping proxy app');
+          log('Stopping proxy app');
           lastInactiveCheck = null;
           return appServiceClient.stop(function (err) {
             if (err) { sendAlert({ error: err }); }
-            console.log('Operation completed successfully');
+            log('Operation completed successfully');
             return callback();
           });
         } else {
@@ -173,19 +168,19 @@ module.exports = function (context, myTimer) {
       }
       
       // 6. If queue is empty && Livy jobs == 0 && function is down | more than 15 minutes ==> shut down HDInsight
-      console.info('If queue is empty && Livy jobs == 0 && function is down | more than 15 minutes ==> shut down HDInsight');
+      info('If queue is empty && Livy jobs == 0 && function is down | more than 15 minutes ==> shut down HDInsight');
       if (status.queueLength === 0 && status.livyRunningJobs === 0 && status.hdinsightOperational && !status.funcActive) {
         var now = new Date();
         if (!lastInactiveCheck) {
           lastInactiveCheck = now;
-          console.log('Operation completed successfully - initialized check time');
+          log('Operation completed successfully - initialized check time');
           return callback();
         }
 
         var minutesPassed = getMinutes(now - lastInactiveCheck);
-        console.log('Minutes passed since inactivity of hdinsight: ' + minutesPassed);
+        log('Minutes passed since inactivity of hdinsight: ' + minutesPassed);
         if (minutesPassed >= MAX_INACTIVE_TIME) {
-          console.log('Deleting HDInsight cluster');
+          log('Deleting HDInsight cluster');
           return hdinsightManager.deleteHDInsight(function (err) {
             if (err) { 
               sendAlert({ error: err }); 
@@ -193,7 +188,7 @@ module.exports = function (context, myTimer) {
             else {
               lastInactiveCheck = null; // If after 15 minutes hdinsight not down, try to delete again
             }
-            console.log('Operation completed successfully');
+            log('Operation completed successfully');
             return callback();
           })
         } else {
@@ -206,7 +201,7 @@ module.exports = function (context, myTimer) {
 
     function sendAlert(alert) {
 
-      console.error('ALERT: ' + alert);
+      error('ALERT: ' + alert);
 
       var options = {
         uri: config.sendAlertUrl,

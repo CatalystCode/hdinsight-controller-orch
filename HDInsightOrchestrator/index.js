@@ -63,6 +63,10 @@ module.exports = function (context, myTimer) {
 
   function init(callback) {
     
+    process.on('uncaughtException', function(err) {
+      error('Unhandled exception: ', err);
+    });
+
     logModule.init({
       domain: process.env.COMPUTERNAME || '',
       instanceId: logModule.getInstanceId(),

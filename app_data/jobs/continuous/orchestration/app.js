@@ -172,17 +172,15 @@ function executeContinuously() {
   try {
     console.log('running job...');
 
-    run(function (err) {
+    return run(function (err) {
       if (err) {
-        console.error('There was an error running the job:');
-        console.error(err);
+        return console.error('There was an error running the job:', err);
       }
 
-      console.info('job iteration ended.');      
+      return console.info('job iteration ended successfully.');      
     });
   } catch (err) {
-      console.error('There was an unexpected error running the job:');
-      console.error(err);    
+    console.error('There was an unexpected error running the job:', err);
   } finally {
     setTimeout(executeContinuously, RUN_EVERY * 1000);
   }

@@ -52,7 +52,7 @@ module.exports = function (context, myTimer) {
 
       if (err) {
         error('Error during execution: ' + err);
-        return done(err);
+        return context.done(err);
       }
 
       log('Execution completed');

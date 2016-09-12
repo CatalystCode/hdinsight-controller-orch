@@ -5,7 +5,7 @@
       "name": "Launch",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/app_data/jobs/continuous/orchestration/app.js",
+      "program": "${workspaceRoot}/back_app_data/jobs/continuous/orchestration/app.js",
       "stopOnEntry": true,
       "args": [],
       "cwd": "${workspaceRoot}",

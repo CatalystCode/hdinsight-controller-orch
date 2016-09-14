@@ -9,7 +9,7 @@ var StatusCollector = require('../../../../lib/status-collector');
 
 var RUN_EVERY = 10; // Seconds
 var lastInactiveCheck = null;
-var MAX_INACTIVE_TIME = 2; // Minutes
+var MAX_INACTIVE_TIME = 15; // Minutes
 
 // Initialize environment, return config
 function init(callback) {

@@ -69,7 +69,7 @@ function run(callback) {
 
     // 3. If queue is not empty && HDInsight is operational && Livy is alive && function is down ==> wake up function
     console.info('If queue is not empty && HDInsight is Running && Livy is alive && function is down ==> wake up function');
-    if (status.queueLength > 0 && status.hdinsightOperational && !status.funcActive) {
+    if (status.queueLength > 0 && status.hdinsightOperational && !status.webjobActive) {
       console.log('Starting proxy app');
       return appServiceClient.start(function (err) {
         if (err) { sendAlert({ error: err }); }
@@ -83,7 +83,7 @@ function run(callback) {
     // 4. If queue is empty && hdinsight = ResourceNotFound && function is up
     // This state is illigal and might happen after first deployment ==> shut down functions
     console.info('If queue is empty && Livy jobs == 0 && hdinsight = ResourceNotFound && function is up');
-    if (status.queueLength === 0 && status.hdinsightStatus == 'ResourceNotFound' && status.funcActive) {
+    if (status.queueLength === 0 && status.hdinsightStatus == 'ResourceNotFound' && status.webjobActive) {
         console.log('Stopping proxy app');
         return appServiceClient.stop(function (err) {
           if (err) { sendAlert({ error: err }); }
@@ -94,7 +94,7 @@ function run(callback) {
 
     // 5. If queue is empty && Livy jobs == 0 && function is up | more than 15 minutes ==> shut down functions
     console.info('If queue is empty && Livy jobs == 0 && function is up | more than 15 minutes ==> shut down functions');
-    if (status.queueLength === 0 && status.livyRunningJobs === 0 && status.hdinsightOperational && status.funcActive) {
+    if (status.queueLength === 0 && status.livyRunningJobs === 0 && status.hdinsightOperational && status.webjobActive) {
       var now = new Date();
       if (!lastInactiveCheck) {
         lastInactiveCheck = now;
@@ -119,7 +119,7 @@ function run(callback) {
     
     // 6. If queue is empty && Livy jobs == 0 && function is down | more than 15 minutes ==> shut down HDInsight
     console.info('If queue is empty && Livy jobs == 0 && function is down | more than 15 minutes ==> shut down HDInsight');
-    if (status.queueLength === 0 && status.livyRunningJobs === 0 && status.hdinsightOperational && !status.funcActive) {
+    if (status.queueLength === 0 && status.livyRunningJobs === 0 && status.hdinsightOperational && !status.webjobActive) {
       var now = new Date();
       if (!lastInactiveCheck) {
         lastInactiveCheck = now;
